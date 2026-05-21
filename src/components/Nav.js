@@ -1,0 +1,94 @@
+import { useState, useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
+import { useTheme } from "../context/ThemeContext";
+import { useToast } from "../hooks/useToast";
+import UserMenu from "./UserMenu";
+
+const Nav = ({ adminMode, onToggleAdmin, cartCount, onOpenCart, onOpenTrackOrder, onOpenOrders, onOpenReviews, onOpenDealers, onAction }) => {
+    const { user, logout } = useAuth();
+    const { theme, toggleTheme } = useTheme();
+    const [scrolled, setScrolled] = useState(false);
+    const [mobileOpen, setMobileOpen] = useState(false);
+
+    useEffect(() => {
+        const onScroll = () => setScrolled(window.scrollY > 50);
+        window.addEventListener("scroll", onScroll);
+        return () => window.removeEventListener("scroll", onScroll);
+    }, []);
+
+    const navLinks = [
+        { name: "Home", href: "#" },
+        { name: "Products", href: "#products" },
+        { name: "About", href: "#about" },
+        { name: "Process", href: "#process" },
+        { name: "Payment Status", href: "#!", onClick: (e) => { e.preventDefault(); onOpenTrackOrder(); } },
+    ];
+
+
+    return (
+        <>
+            <nav className={`nav ${scrolled ? "scrolled" : ""}`}>
+                <div className="nav-container" style={{ display: 'flex', width: '100%', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <a href="#" className="logo">
+                        <div className="logo-icon">🌱</div>
+                        <div className="logo-text">
+                            <span className="logo-main">ViviGrow</span>
+                            <span className="logo-sub">Pure Plant Nutrition</span>
+                        </div>
+                    </a>
+
+                    <ul className="nav-links">
+                        {navLinks.map((link) => (
+                            <li key={link.name}>
+                                <a href={link.href} onClick={link.onClick}>{link.name}</a>
+                            </li>
+                        ))}
+                    </ul>
+
+                    <div className="nav-actions">
+                        {user && onToggleAdmin && (
+                            <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginRight: '10px' }}>
+                                <div onClick={onToggleAdmin} style={{ background: adminMode ? 'var(--accent)' : 'rgba(255,255,255,0.1)', color: adminMode ? '#000' : '#fff', padding: '6px 16px', borderRadius: '100px', fontSize: '0.75rem', fontWeight: 900, letterSpacing: '0.05em', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '8px', border: '1px solid rgba(255,255,255,0.3)', cursor: 'pointer', transition: 'all 0.3s' }}>
+                                    <span style={{ width: 8, height: 8, background: adminMode ? '#fff' : 'rgba(255,255,255,0.4)', borderRadius: '50%', boxShadow: adminMode ? '0 0 8px #fff' : 'none', animation: adminMode ? 'pulse 1.5s infinite' : 'none' }}></span>
+                                    {adminMode ? 'Exit Portal' : 'Admin Portal'}
+                                </div>
+                            </div>
+                        )}
+                        <div className="theme-toggle" onClick={toggleTheme}>
+                            {theme === 'light' ? '🌙' : '☀️'}
+                        </div>
+
+                        <button className="nav-cart-btn" onClick={onOpenCart}>
+                            <span className="cart-ic">🛒</span>
+                            {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
+                        </button>
+
+                        {user ? (
+                            <UserMenu user={user} onLogout={logout} adminMode={adminMode} onToggleAdmin={onToggleAdmin} />
+                        ) : (
+                            <button className="nav-cart-btn" style={{ padding: '6px 14px', borderRadius: '8px', fontSize: '0.8rem', background: 'var(--accent)', color: '#000', fontWeight: 700 }} onClick={() => onAction('Login')}>
+                                Login
+                            </button>
+                        )}
+
+                        <button className="mobile-toggle" onClick={() => setMobileOpen(true)}>☰</button>
+                    </div>
+                </div>
+            </nav>
+
+            <div className={`drawer-overlay ${mobileOpen ? 'open' : ''}`} onClick={() => setMobileOpen(false)} />
+            <div className={`mobile-drawer ${mobileOpen ? 'open' : ''}`}>
+                <button className="drawer-close" onClick={() => setMobileOpen(false)}>✕</button>
+                <ul className="drawer-links">
+                    {navLinks.map((link) => (
+                        <li key={link.name} onClick={() => { setMobileOpen(false); if (link.onClick) link.onClick({ preventDefault: () => { } }); }}>
+                            <a href={link.href}>{link.name}</a>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        </>
+    );
+};
+
+export default Nav;
