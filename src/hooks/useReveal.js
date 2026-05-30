@@ -9,5 +9,5 @@ export function useReveal() {
         );
         els.forEach((e) => obs.observe(e));
         return () => obs.disconnect();
-    });
+    }, []);
 }
