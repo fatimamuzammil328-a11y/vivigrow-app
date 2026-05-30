@@ -57,6 +57,17 @@ app.use('/api/reviews', reviewRoutes);
 app.use('/api/dealers', require('./routes/dealers'));
 app.use('/api/erp', require('./routes/erp'));
 
+// DEBUG route – shows raw connection error (remove after testing)
+app.get('/api/debug-mongo', async (req, res) => {
+  try {
+    await mongoose.connect(process.env.MONGODB_URI, { serverSelectionTimeoutMS: 10000 });
+    res.json({ status: 'ok', message: 'MongoDB connection succeeded' });
+  } catch (err) {
+    console.error('DEBUG Mongo connection error:', err);
+    res.status(500).json({ status: 'error', message: err.message, details: err });
+  }
+});
+
 app.get('/api/health', (req, res) => {
     res.json({
         status: 'ok',

@@ -24,10 +24,16 @@ function LoginPage({ onGoSignup, onGoBack }) {
         const errs = validate();
         if (Object.keys(errs).length) { setErrors(errs); return; }
         setLoading(true);
-        await new Promise((r) => setTimeout(r, 700));
-        const result = await login(form);
-        setLoading(false);
-        if (!result.ok) setApiError(result.error);
+        try {
+            await new Promise((r) => setTimeout(r, 700));
+            const result = await login(form);
+            if (!result.ok) setApiError(result.error);
+        } catch (err) {
+            console.error('Login error:', err);
+            setApiError('An unexpected error occurred.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (

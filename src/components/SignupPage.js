@@ -29,15 +29,21 @@ function SignupPage({ onGoLogin, onGoBack }) {
         const errs = validate();
         if (Object.keys(errs).length) { setErrors(errs); return; }
         setLoading(true);
-        await new Promise((r) => setTimeout(r, 800));
-        const result = await register({ 
-            name: `${form.firstName} ${form.lastName}`, 
-            email: form.email, 
-            password: form.password,
-            role: form.role
-        });
-        setLoading(false);
-        if (!result.ok) setApiError(result.error);
+        try {
+            await new Promise((r) => setTimeout(r, 800));
+            const result = await register({
+                name: `${form.firstName} ${form.lastName}`,
+                email: form.email,
+                password: form.password,
+                role: form.role,
+            });
+            if (!result.ok) setApiError(result.error);
+        } catch (err) {
+            console.error('Registration error:', err);
+            setApiError('An unexpected error occurred.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     const StrengthBar = () => (
