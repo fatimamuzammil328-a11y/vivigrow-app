@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
-import { useToast } from "../hooks/useToast";
 import UserMenu from "./UserMenu";
 
 const Nav = ({ adminMode, onToggleAdmin, cartCount, onOpenCart, onOpenTrackOrder, onOpenOrders, onOpenReviews, onOpenDealers, onAction }) => {
@@ -17,7 +16,7 @@ const Nav = ({ adminMode, onToggleAdmin, cartCount, onOpenCart, onOpenTrackOrder
     }, []);
 
     const navLinks = [
-        { name: "Home", href: "#" },
+        { name: "Home", href: "#/" },
         { name: "Products", href: "#products" },
         { name: "About", href: "#about" },
         { name: "Process", href: "#process" },
@@ -29,7 +28,7 @@ const Nav = ({ adminMode, onToggleAdmin, cartCount, onOpenCart, onOpenTrackOrder
         <>
             <nav className={`nav ${scrolled ? "scrolled" : ""}`}>
                 <div className="nav-container" style={{ display: 'flex', width: '100%', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <a href="#" className="logo">
+                    <a href="#/" className="logo">
                         <div className="logo-icon">🌱</div>
                         <div className="logo-text">
                             <span className="logo-main">ViviGrow</span>

@@ -52,7 +52,7 @@ export const Products = ({ products, adminMode, onAdd, onEdit, onDelete, onAddTo
             <div><div className="sec-kicker">Product Catalog</div><div className="sec-h2">Our <em>Fertilizer</em> Range</div></div>
             <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
                 {adminMode && <button className="add-product-btn" onClick={onAdd}>＋ Add Product</button>}
-                <a href="#" className="btn-ghost">View All →</a>
+                <a href="#products" className="btn-ghost">View All →</a>
             </div>
         </div>
         <div className="prod-grid">
@@ -137,11 +137,11 @@ export const Process = () => (
 /* ════════════════════════════════════════════════
    TESTIMONIALS SECTION
 ════════════════════════════════════════════════ */
-const testimonials = [
+/* const testimonials = [
     { text: '"Switched to GoldHarvest NPK and saw a 42% increase in wheat yield. The soil testing was a game-changer!"', avatar: "👨‍🌾", name: "Tariq Ali", role: "Wheat Farmer, Punjab" },
     { text: '"BioRoot transformed my rice paddies. Soil is healthier, water retention improved, using 20% less water now."', avatar: "👨‍🌾", name: "Usman Jamil", role: "Rice Farmer, Sindh" },
     { text: '"Delivery on time, packaging excellent. Agronomist support helped schedule applications correctly."', avatar: "👨‍🌾", name: "Bilal Shafiq", role: "Orchard Owner, KPK" },
-];
+]; */
 export const Testimonials = ({ reviews = [], onAddReview }) => {
     const displayReviews = reviews.length > 0 ? reviews : [
         { userName: "Tariq Ali", userRole: "Punjab", comment: '"Saw a 42% increase in yield!"', rating: 5 },
@@ -182,7 +182,7 @@ export const CTA = () => (
         <div className="rev">
             <h2>Ready to grow <em>smarter?</em></h2>
             <p>Join 12,000+ farmers. Get a free soil test with your first order.</p>
-            <div className="cta-btns"><a href="#" className="btn-w">Shop Products</a><a href="#" className="btn-ghost-w">Contact Us →</a></div>
+            <div className="cta-btns"><a href="#products" className="btn-w">Shop Products</a><a href="#process" className="btn-ghost-w">Contact Us →</a></div>
         </div>
     </section>
 );
@@ -194,13 +194,13 @@ export const Footer = () => (
     <footer>
         <div className="foot-top">
             <div>
-                <a href="#" className="flogo"><span className="flogo-icon">🌿</span>Vivi<span>Grow</span></a>
+                <a href="#/" className="flogo"><span className="flogo-icon">🌿</span>Vivi<span>Grow</span></a>
                 <p className="fdesc">Precision fertilizer solutions for modern South Asian agriculture. Scientifically formulated. Farmer-tested.</p>
-                <div className="socials">{["f", "in", "tw", "yt"].map((s) => <a href="#" className="soc" key={s}>{s}</a>)}</div>
+                <div className="socials">{["f", "in", "tw", "yt"].map((s) => <a href="#/" className="soc" key={s}>{s}</a>)}</div>
             </div>
-            <div className="foot-col"><h4>Products</h4><ul>{["NPK Fertilizers", "Nitrogen Series", "Organic Range", "Micronutrients"].map((l) => <li key={l}><a href="#">{l}</a></li>)}</ul></div>
-            <div className="foot-col"><h4>Company</h4><ul>{["About Us", "Research", "Careers", "Dealer Network"].map((l) => <li key={l}><a href="#">{l}</a></li>)}</ul></div>
-            <div className="foot-col"><h4>Support</h4><ul>{["Soil Test", "Agronomist Chat", "Track Order", "Contact"].map((l) => <li key={l}><a href="#">{l}</a></li>)}</ul></div>
+            <div className="foot-col"><h4>Products</h4><ul>{["NPK Fertilizers", "Nitrogen Series", "Organic Range", "Micronutrients"].map((l) => <li key={l}><a href="#/">{l}</a></li>)}</ul></div>
+            <div className="foot-col"><h4>Company</h4><ul>{["About Us", "Research", "Careers", "Dealer Network"].map((l) => <li key={l}><a href="#/">{l}</a></li>)}</ul></div>
+            <div className="foot-col"><h4>Support</h4><ul>{["Soil Test", "Agronomist Chat", "Track Order", "Contact"].map((l) => <li key={l}><a href="#/">{l}</a></li>)}</ul></div>
         </div>
         <div className="foot-bottom"><span className="copy">© 2026 ViviGrow Pvt Ltd. All rights reserved.</span><span className="copy">Made with 🌱 for farmers of Pakistan</span></div>
     </footer>

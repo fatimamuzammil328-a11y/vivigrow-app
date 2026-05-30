@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 
-const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000/api";
-
 function LoginPage({ onGoSignup, onGoBack }) {
     const { login } = useAuth();
     const [form, setForm] = useState({ email: "", password: "" });
@@ -46,7 +44,7 @@ function LoginPage({ onGoSignup, onGoBack }) {
                         <h2 className="auth-form-title">Login</h2>
                         <p className="auth-form-sub">
                             Don't have an account?{" "}
-                            <a onClick={onGoSignup}>Create one free →</a>
+                            <a href="#signup" onClick={(e) => { e.preventDefault(); onGoSignup(); }}>Create one free →</a>
                         </p>
                     </div>
 
@@ -99,7 +97,7 @@ function LoginPage({ onGoSignup, onGoBack }) {
 
                     <div className="auth-terms">
                         By logging in you agree to our{" "}
-                        <a>Terms of Service</a> and <a>Privacy Policy</a>.
+                        <a href="#terms" onClick={(e) => e.preventDefault()}>Terms of Service</a> and <a href="#privacy" onClick={(e) => e.preventDefault()}>Privacy Policy</a>.
                     </div>
                 </div>
             </div>

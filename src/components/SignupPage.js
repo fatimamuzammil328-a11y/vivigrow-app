@@ -79,7 +79,7 @@ function SignupPage({ onGoLogin, onGoBack }) {
                         <h2 className="auth-form-title">Create account</h2>
                         <p className="auth-form-sub">
                             Already have an account?{" "}
-                            <a onClick={onGoLogin}>Login here →</a>
+                            <a href="#login" onClick={(e) => { e.preventDefault(); onGoLogin(); }}>Login here →</a>
                         </p>
                     </div>
 
@@ -185,7 +185,7 @@ function SignupPage({ onGoLogin, onGoBack }) {
                     </form>
 
                     <div className="auth-terms">
-                        By creating an account you agree to our <a>Terms of Service</a> and <a>Privacy Policy</a>.
+                        By creating an account you agree to our <a href="#terms" onClick={(e) => e.preventDefault()}>Terms of Service</a> and <a href="#privacy" onClick={(e) => e.preventDefault()}>Privacy Policy</a>.
                     </div>
                 </div>
             </div>
