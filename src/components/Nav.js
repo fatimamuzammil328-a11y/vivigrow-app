@@ -56,7 +56,7 @@ const Nav = ({ cartCount, onOpenCart, onOpenTrackOrder, onAction }) => {
                         </button>
 
                         {user ? (
-                            <UserMenu user={user} onLogout={logout} adminMode={adminMode} onToggleAdmin={onToggleAdmin} />
+                            <UserMenu user={user} onLogout={logout} />
                         ) : (
                             <button className="nav-cart-btn" style={{ padding: '6px 14px', borderRadius: '8px', fontSize: '0.8rem', background: 'var(--accent)', color: '#000', fontWeight: 700 }} onClick={() => onAction('Login')}>
                                 Login
