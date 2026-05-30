@@ -36,7 +36,7 @@ function MainApp() {
     const [showUniversalAdd, setShowUniversalAdd] = useState(null);
     const [editingRecord, setEditingRecord] = useState(null);
 
-    useReveal([products, reviews, adminMode]);
+    useReveal([products, reviews, user]);
 
     useEffect(() => {
         fetch(`${API_URL}/products`)
