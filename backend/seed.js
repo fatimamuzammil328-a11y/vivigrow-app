@@ -41,7 +41,7 @@ const products = [
         badge: "New",
         emoji: "🌾",
         imgClass: "p2",
-        image: "https://images.unsplash.com/photo-1599818818820-205d5272a0f8?auto=format&fit=crop&q=80&w=400&h=400"
+        image: "https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&q=80&w=400&h=400"
     },
     {
         name: "BioRoot Mycorrhizal",
@@ -52,7 +52,7 @@ const products = [
         badge: "Organic",
         emoji: "💧",
         imgClass: "p3",
-        image: "https://images.unsplash.com/photo-1585314062340-f1a5a7c9328d?auto=format&fit=crop&q=80&w=400&h=400"
+        image: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&q=80&w=400&h=400"
     },
     {
         name: "PhosGrow DAP 18-46-0",
@@ -74,7 +74,7 @@ const products = [
         badge: "Limited",
         emoji: "🍀",
         imgClass: "p5",
-        image: "https://images.unsplash.com/photo-1592417817098-8f3d6eb19675?auto=format&fit=crop&q=80&w=400&h=400"
+        image: "https://images.unsplash.com/photo-1530595467537-0b5996c41f2d?auto=format&fit=crop&q=80&w=400&h=400"
     },
     {
         name: "ZincoActive Plus",
