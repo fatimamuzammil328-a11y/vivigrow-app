@@ -319,6 +319,7 @@ function MainApp() {
                 <ManagementModal
                     type={managementModal}
                     data={erpData}
+                    user={user}
                     onClose={() => { setManagementModal(null); setEditingRecord(null); }}
                     onDelete={handleDeleteERP}
                     onAdd={(t) => { setEditingRecord(null); setShowUniversalAdd(t); }}

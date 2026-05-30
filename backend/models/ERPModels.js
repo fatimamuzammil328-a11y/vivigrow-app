@@ -128,7 +128,17 @@ const machinerySchema = new mongoose.Schema({
 });
 const Machinery = mongoose.model('Machinery', machinerySchema);
 
+const invoiceSchema = new mongoose.Schema({
+    invoiceId: { type: String, required: true },
+    customerName: { type: String, required: true },
+    amount: { type: Number, required: true },
+    issueDate: { type: Date, default: Date.now },
+    dueDate: { type: String, required: true },
+    status: { type: String, enum: ['Paid', 'Unpaid', 'Overdue'], default: 'Unpaid' }
+});
+const Invoice = mongoose.model('Invoice', invoiceSchema);
+
 module.exports = { 
     Warehouse, Salary, Transport, SalesRecord, ProfitLoss, RawMaterial, Production, ReturnRecord, Safety, TaxRecord,
-    Inventory, Payment, Customer, QualityControl, Machinery
+    Inventory, Payment, Customer, QualityControl, Machinery, Invoice
 };

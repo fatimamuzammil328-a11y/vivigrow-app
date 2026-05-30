@@ -463,14 +463,56 @@ export const TrackOrderModal = ({ isOpen, onClose }) => {
     );
 };
 
-export const ManagementModal = ({ type, data, onClose, onDelete, onAdd, onEdit }) => {
+export const ManagementModal = ({ type, data, onClose, onDelete, onAdd, onEdit, user }) => {
+    const getWriteAccess = () => {
+        if (!user) return false;
+        if (user.role === 'admin') return true;
+        if (user.role === 'dealer') {
+            return ['RawMaterials', 'Inventory', 'Orders', 'Customers', 'Invoices'].includes(type);
+        }
+        if (user.role === 'farmer') {
+            return ['Reviews', 'Support'].includes(type);
+        }
+        return false;
+    };
+    const hasWriteAccess = getWriteAccess();
+    
+    const showActionColumn = hasWriteAccess || (type === 'Profile' && user?.role !== 'admin') || type === 'Reviews';
+
+    const filteredData = (() => {
+        let result = data || [];
+        if (type === 'Profile' && user?.role !== 'admin') {
+            result = result.filter(item => item._id === user?._id || item.email === user?.email);
+        } else if (type === 'Invoices' && user?.role === 'farmer') {
+            const farmerKeyword = user?.name?.split(' ')[0]?.toLowerCase() || '';
+            result = result.filter(item => 
+                item.customerName?.toLowerCase().includes(farmerKeyword) || 
+                item.customerName?.toLowerCase().includes('chaudhary') ||
+                item.customerName?.toLowerCase().includes('khan')
+            );
+        } else if (type === 'Orders' && user?.role === 'farmer') {
+            const farmerKeyword = user?.name?.split(' ')[0]?.toLowerCase() || '';
+            result = result.filter(item => 
+                item.customerName?.toLowerCase().includes(farmerKeyword) ||
+                item.customerName?.toLowerCase().includes('chaudhary') ||
+                !item.customerName
+            );
+        }
+        return result;
+    })();
+
     return (
         <div className="modal-overlay" onClick={onClose}>
             <div className="modal dashboard-modal" onClick={(e) => e.stopPropagation()}>
                 <div className="modal-header">
                     <h3 className="modal-title">Management Desk: {type}</h3>
                     <div style={{ display: 'flex', gap: '10px' }}>
-                        <button className="btn-blue" style={{ padding: '8px 16px', fontSize: '0.8rem' }} onClick={() => onAdd(type)}>+ Add New {type}</button>
+                        {hasWriteAccess && type !== 'Profile' && (
+                            <button className="btn-blue" style={{ padding: '8px 16px', fontSize: '0.8rem' }} onClick={() => onAdd(type)}>+ Add New {type}</button>
+                        )}
+                        {hasWriteAccess && type === 'Profile' && user?.role === 'admin' && (
+                            <button className="btn-blue" style={{ padding: '8px 16px', fontSize: '0.8rem' }} onClick={() => onAdd(type)}>+ Add New {type}</button>
+                        )}
                         <button className="modal-close" onClick={onClose}>✕</button>
                     </div>
                 </div>
@@ -478,48 +520,50 @@ export const ManagementModal = ({ type, data, onClose, onDelete, onAdd, onEdit }
                     <table className="admin-table">
                         <thead>
                             {type === 'Orders' ? (
-                                <tr><th>ID</th><th>Amount</th><th>Method</th><th>Status</th><th>Action</th></tr>
+                                <tr><th>ID</th><th>Amount</th><th>Method</th><th>Status</th>{showActionColumn && <th>Action</th>}</tr>
                             ) : type === 'Dealers' ? (
-                                <tr><th>Dealer Name</th><th>Location</th><th>Contact</th><th>Status</th><th>Action</th></tr>
+                                <tr><th>Dealer Name</th><th>Location</th><th>Contact</th><th>Status</th>{showActionColumn && <th>Action</th>}</tr>
                             ) : type === 'Warehouse' ? (
-                                <tr><th>Location</th><th>Capacity</th><th>Manager</th><th>Status</th><th>Action</th></tr>
+                                <tr><th>Location</th><th>Capacity</th><th>Manager</th><th>Status</th>{showActionColumn && <th>Action</th>}</tr>
                             ) : type === 'Salaries' ? (
-                                <tr><th>Employee</th><th>Amount</th><th>Month</th><th>Status</th><th>Action</th></tr>
+                                <tr><th>Employee</th><th>Amount</th><th>Month</th><th>Status</th>{showActionColumn && <th>Action</th>}</tr>
                             ) : type === 'Transport' ? (
-                                <tr><th>Vehicle No</th><th>Driver</th><th>Destination</th><th>Status</th><th>Action</th></tr>
+                                <tr><th>Vehicle No</th><th>Driver</th><th>Destination</th><th>Status</th>{showActionColumn && <th>Action</th>}</tr>
                             ) : type === 'Sales' ? (
-                                <tr><th>Invoice ID</th><th>Customer</th><th>Total</th><th>Status</th><th>Action</th></tr>
+                                <tr><th>Invoice ID</th><th>Customer</th><th>Total</th><th>Status</th>{showActionColumn && <th>Action</th>}</tr>
                             ) : type === 'ProfitLoss' ? (
-                                <tr><th>Month</th><th>Revenue</th><th>Expenses</th><th>Net Profit</th><th>Action</th></tr>
+                                <tr><th>Month</th><th>Revenue</th><th>Expenses</th><th>Net Profit</th>{showActionColumn && <th>Action</th>}</tr>
                             ) : type === 'RawMaterials' ? (
-                                <tr><th>Material</th><th>Source</th><th>Received By</th><th>Quantity</th><th>Cost</th><th>Action</th></tr>
+                                <tr><th>Material</th><th>Source</th><th>Received By</th><th>Quantity</th><th>Cost</th>{showActionColumn && <th>Action</th>}</tr>
                             ) : type === 'Production' ? (
-                                <tr><th>Batch</th><th>Product</th><th>Qty</th><th>Status</th><th>Action</th></tr>
+                                <tr><th>Batch</th><th>Product</th><th>Qty</th><th>Status</th>{showActionColumn && <th>Action</th>}</tr>
                             ) : type === 'Returns' ? (
-                                <tr><th>Order ID</th><th>Reason</th><th>Refund</th><th>Status</th><th>Action</th></tr>
+                                <tr><th>Order ID</th><th>Reason</th><th>Refund</th><th>Status</th>{showActionColumn && <th>Action</th>}</tr>
                             ) : type === 'Safety' ? (
-                                <tr><th>Inspector</th><th>Result</th><th>Remarks</th><th>Date</th><th>Action</th></tr>
+                                <tr><th>Inspector</th><th>Result</th><th>Remarks</th><th>Date</th>{showActionColumn && <th>Action</th>}</tr>
                             ) : type === 'Taxes' ? (
-                                <tr><th>Year</th><th>Tax Type</th><th>Amount</th><th>Status</th><th>Action</th></tr>
+                                <tr><th>Year</th><th>Tax Type</th><th>Amount</th><th>Status</th>{showActionColumn && <th>Action</th>}</tr>
                             ) : type === 'Profile' ? (
-                                <tr><th>Name</th><th>Email</th><th>Role</th><th>Action</th></tr>
+                                <tr><th>Name</th><th>Email</th><th>Role</th>{showActionColumn && <th>Action</th>}</tr>
                             ) : type === 'Inventory' ? (
-                                <tr><th>Item Name</th><th>SKU</th><th>Quantity</th><th>Price</th><th>Status</th><th>Action</th></tr>
+                                <tr><th>Item Name</th><th>SKU</th><th>Quantity</th><th>Price</th><th>Status</th>{showActionColumn && <th>Action</th>}</tr>
                             ) : type === 'Payments' ? (
-                                <tr><th>Tx ID</th><th>Amount</th><th>Status</th><th>Email</th><th>Date</th><th>Action</th></tr>
+                                <tr><th>Tx ID</th><th>Amount</th><th>Status</th><th>Email</th><th>Date</th>{showActionColumn && <th>Action</th>}</tr>
                             ) : type === 'Customers' ? (
-                                <tr><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Status</th><th>Action</th></tr>
+                                <tr><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Status</th>{showActionColumn && <th>Action</th>}</tr>
                             ) : type === 'QualityControl' ? (
-                                <tr><th>Batch No</th><th>Inspector</th><th>Score</th><th>Status</th><th>Date</th><th>Action</th></tr>
+                                <tr><th>Batch No</th><th>Inspector</th><th>Score</th><th>Status</th><th>Date</th>{showActionColumn && <th>Action</th>}</tr>
                             ) : type === 'Machinery' ? (
-                                <tr><th>Machine Name</th><th>Serial No</th><th>Status</th><th>Action</th></tr>
+                                <tr><th>Machine Name</th><th>Serial No</th><th>Status</th>{showActionColumn && <th>Action</th>}</tr>
+                            ) : type === 'Invoices' ? (
+                                <tr><th>Invoice ID</th><th>Customer Name</th><th>Amount</th><th>Due Date</th><th>Status</th>{showActionColumn && <th>Action</th>}</tr>
                             ) : (
-                                <tr><th>User</th><th>Comment</th><th>Rating</th><th>Action</th></tr>
+                                <tr><th>User</th><th>Comment</th><th>Rating</th>{showActionColumn && <th>Action</th>}</tr>
                             )}
                         </thead>
                         <tbody>
-                            {data.length === 0 ? <tr><td colSpan="7" style={{ textAlign: 'center', padding: 20 }}>No data found.</td></tr> : null}
-                            {data.map((item, i) => (
+                            {filteredData.length === 0 ? <tr><td colSpan="7" style={{ textAlign: 'center', padding: 20 }}>No data found.</td></tr> : null}
+                            {filteredData.map((item, i) => (
                                 <tr key={item._id || i}>
                                     {type === 'Orders' ? (
                                         <>
@@ -527,10 +571,16 @@ export const ManagementModal = ({ type, data, onClose, onDelete, onAdd, onEdit }
                                             <td>PKR {item.totalAmount?.toLocaleString()}</td>
                                             <td>{item.paymentMethod}</td>
                                             <td><span className={`status-pill ${item.status?.toLowerCase().split(' ')[0] || ''}`}>{item.status}</span></td>
-                                            <td>
-                                                <button onClick={() => onEdit(item)} style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: 10 }}>✏️</button>
-                                                <button onClick={() => onDelete(item._id)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>🗑️</button>
-                                            </td>
+                                            {showActionColumn && (
+                                                <td>
+                                                    {hasWriteAccess && (
+                                                        <>
+                                                            <button onClick={() => onEdit(item)} style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: 10 }}>✏️</button>
+                                                            <button onClick={() => onDelete(item._id)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>🗑️</button>
+                                                        </>
+                                                    )}
+                                                </td>
+                                            )}
                                         </>
                                     ) : type === 'Dealers' ? (
                                         <>
@@ -538,10 +588,16 @@ export const ManagementModal = ({ type, data, onClose, onDelete, onAdd, onEdit }
                                             <td>{item.location}</td>
                                             <td>{item.contact}</td>
                                             <td><span className={`status-pill ${item.status?.toLowerCase() || 'active'}`}>{item.status}</span></td>
-                                            <td>
-                                                <button onClick={() => onEdit(item)} style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: 10 }}>✏️</button>
-                                                <button onClick={() => onDelete(item._id)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>🗑️</button>
-                                            </td>
+                                            {showActionColumn && (
+                                                <td>
+                                                    {hasWriteAccess && (
+                                                        <>
+                                                            <button onClick={() => onEdit(item)} style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: 10 }}>✏️</button>
+                                                            <button onClick={() => onDelete(item._id)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>🗑️</button>
+                                                        </>
+                                                    )}
+                                                </td>
+                                            )}
                                         </>
                                     ) : type === 'Warehouse' ? (
                                         <>
@@ -549,10 +605,16 @@ export const ManagementModal = ({ type, data, onClose, onDelete, onAdd, onEdit }
                                             <td>{item.capacity}</td>
                                             <td>{item.manager}</td>
                                             <td><span className={`status-pill ${item.status === 'Full' ? 'red' : 'green'}`}>{item.status}</span></td>
-                                            <td>
-                                                <button onClick={() => onEdit(item)} style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: 10 }}>✏️</button>
-                                                <button onClick={() => onDelete(item._id)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>🗑️</button>
-                                            </td>
+                                            {showActionColumn && (
+                                                <td>
+                                                    {hasWriteAccess && (
+                                                        <>
+                                                            <button onClick={() => onEdit(item)} style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: 10 }}>✏️</button>
+                                                            <button onClick={() => onDelete(item._id)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>🗑️</button>
+                                                        </>
+                                                    )}
+                                                </td>
+                                            )}
                                         </>
                                     ) : type === 'Salaries' ? (
                                         <>
@@ -560,10 +622,16 @@ export const ManagementModal = ({ type, data, onClose, onDelete, onAdd, onEdit }
                                             <td>Rs. {item.amount?.toLocaleString()}</td>
                                             <td>{item.month}</td>
                                             <td><span className={`status-pill ${item.status === 'Paid' ? 'green' : 'red'}`}>{item.status}</span></td>
-                                            <td>
-                                                <button onClick={() => onEdit(item)} style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: 10 }}>✏️</button>
-                                                <button onClick={() => onDelete(item._id)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>🗑️</button>
-                                            </td>
+                                            {showActionColumn && (
+                                                <td>
+                                                    {hasWriteAccess && (
+                                                        <>
+                                                            <button onClick={() => onEdit(item)} style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: 10 }}>✏️</button>
+                                                            <button onClick={() => onDelete(item._id)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>🗑️</button>
+                                                        </>
+                                                    )}
+                                                </td>
+                                            )}
                                         </>
                                     ) : type === 'Transport' ? (
                                         <>
@@ -571,10 +639,16 @@ export const ManagementModal = ({ type, data, onClose, onDelete, onAdd, onEdit }
                                             <td>{item.driverName}</td>
                                             <td>{item.destination}</td>
                                             <td><span className={`status-pill ${item.status === 'In Transit' ? 'blue' : 'green'}`}>{item.status}</span></td>
-                                            <td>
-                                                <button onClick={() => onEdit(item)} style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: 10 }}>✏️</button>
-                                                <button onClick={() => onDelete(item._id)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>🗑️</button>
-                                            </td>
+                                            {showActionColumn && (
+                                                <td>
+                                                    {hasWriteAccess && (
+                                                        <>
+                                                            <button onClick={() => onEdit(item)} style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: 10 }}>✏️</button>
+                                                            <button onClick={() => onDelete(item._id)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>🗑️</button>
+                                                        </>
+                                                    )}
+                                                </td>
+                                            )}
                                         </>
                                     ) : type === 'Sales' ? (
                                         <>
@@ -582,10 +656,16 @@ export const ManagementModal = ({ type, data, onClose, onDelete, onAdd, onEdit }
                                             <td>{item.customerName}</td>
                                             <td>Rs. {item.totalAmount?.toLocaleString()}</td>
                                             <td><span className={`status-pill ${item.paymentStatus === 'Paid' ? 'green' : 'gold'}`}>{item.paymentStatus}</span></td>
-                                            <td>
-                                                <button onClick={() => onEdit(item)} style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: 10 }}>✏️</button>
-                                                <button onClick={() => onDelete(item._id)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>🗑️</button>
-                                            </td>
+                                            {showActionColumn && (
+                                                <td>
+                                                    {hasWriteAccess && (
+                                                        <>
+                                                            <button onClick={() => onEdit(item)} style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: 10 }}>✏️</button>
+                                                            <button onClick={() => onDelete(item._id)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>🗑️</button>
+                                                        </>
+                                                    )}
+                                                </td>
+                                            )}
                                         </>
                                     ) : type === 'ProfitLoss' ? (
                                         <>
@@ -593,10 +673,16 @@ export const ManagementModal = ({ type, data, onClose, onDelete, onAdd, onEdit }
                                             <td>Rs. {item.revenue?.toLocaleString()}</td>
                                             <td>Rs. {item.expenses?.toLocaleString()}</td>
                                             <td><strong style={{color:'var(--secondary)'}}>Rs. {item.netProfit?.toLocaleString()}</strong></td>
-                                            <td>
-                                                <button onClick={() => onEdit(item)} style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: 10 }}>✏️</button>
-                                                <button onClick={() => onDelete(item._id)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>🗑️</button>
-                                            </td>
+                                            {showActionColumn && (
+                                                <td>
+                                                    {hasWriteAccess && (
+                                                        <>
+                                                            <button onClick={() => onEdit(item)} style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: 10 }}>✏️</button>
+                                                            <button onClick={() => onDelete(item._id)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>🗑️</button>
+                                                        </>
+                                                    )}
+                                                </td>
+                                            )}
                                         </>
                                     ) : type === 'RawMaterials' ? (
                                         <>
@@ -605,10 +691,16 @@ export const ManagementModal = ({ type, data, onClose, onDelete, onAdd, onEdit }
                                             <td>{item.receivedBy}</td>
                                             <td>{item.quantity}</td>
                                             <td>Rs. {item.cost?.toLocaleString()}</td>
-                                            <td>
-                                                <button onClick={() => onEdit(item)} style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: 10 }}>✏️</button>
-                                                <button onClick={() => onDelete(item._id)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>🗑️</button>
-                                            </td>
+                                            {showActionColumn && (
+                                                <td>
+                                                    {hasWriteAccess && (
+                                                        <>
+                                                            <button onClick={() => onEdit(item)} style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: 10 }}>✏️</button>
+                                                            <button onClick={() => onDelete(item._id)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>🗑️</button>
+                                                        </>
+                                                    )}
+                                                </td>
+                                            )}
                                         </>
                                     ) : type === 'Production' ? (
                                         <>
@@ -616,10 +708,16 @@ export const ManagementModal = ({ type, data, onClose, onDelete, onAdd, onEdit }
                                             <td>{item.productName}</td>
                                             <td>{item.quantityProduced}</td>
                                             <td><span className={`status-pill ${item.status === 'Completed' ? 'green' : 'blue'}`}>{item.status}</span></td>
-                                            <td>
-                                                <button onClick={() => onEdit(item)} style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: 10 }}>✏️</button>
-                                                <button onClick={() => onDelete(item._id)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>🗑️</button>
-                                            </td>
+                                            {showActionColumn && (
+                                                <td>
+                                                    {hasWriteAccess && (
+                                                        <>
+                                                            <button onClick={() => onEdit(item)} style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: 10 }}>✏️</button>
+                                                            <button onClick={() => onDelete(item._id)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>🗑️</button>
+                                                        </>
+                                                    )}
+                                                </td>
+                                            )}
                                         </>
                                     ) : type === 'Returns' ? (
                                         <>
@@ -627,10 +725,16 @@ export const ManagementModal = ({ type, data, onClose, onDelete, onAdd, onEdit }
                                             <td>{item.reason}</td>
                                             <td>Rs. {item.refundAmount?.toLocaleString()}</td>
                                             <td><span className="status-pill red">{item.status}</span></td>
-                                            <td>
-                                                <button onClick={() => onEdit(item)} style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: 10 }}>✏️</button>
-                                                <button onClick={() => onDelete(item._id)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>🗑️</button>
-                                            </td>
+                                            {showActionColumn && (
+                                                <td>
+                                                    {hasWriteAccess && (
+                                                        <>
+                                                            <button onClick={() => onEdit(item)} style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: 10 }}>✏️</button>
+                                                            <button onClick={() => onDelete(item._id)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>🗑️</button>
+                                                        </>
+                                                    )}
+                                                </td>
+                                            )}
                                         </>
                                     ) : type === 'Safety' ? (
                                         <>
@@ -638,10 +742,16 @@ export const ManagementModal = ({ type, data, onClose, onDelete, onAdd, onEdit }
                                             <td><span className={`status-pill ${item.result === 'Passed' ? 'green' : 'red'}`}>{item.result}</span></td>
                                             <td>{item.remarks}</td>
                                             <td>{item.checkupDate ? new Date(item.checkupDate).toLocaleDateString() : ''}</td>
-                                            <td>
-                                                <button onClick={() => onEdit(item)} style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: 10 }}>✏️</button>
-                                                <button onClick={() => onDelete(item._id)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>🗑️</button>
-                                            </td>
+                                            {showActionColumn && (
+                                                <td>
+                                                    {hasWriteAccess && (
+                                                        <>
+                                                            <button onClick={() => onEdit(item)} style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: 10 }}>✏️</button>
+                                                            <button onClick={() => onDelete(item._id)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>🗑️</button>
+                                                        </>
+                                                    )}
+                                                </td>
+                                            )}
                                         </>
                                     ) : type === 'Taxes' ? (
                                         <>
@@ -649,20 +759,30 @@ export const ManagementModal = ({ type, data, onClose, onDelete, onAdd, onEdit }
                                             <td>{item.taxType}</td>
                                             <td>Rs. {item.amountPaid?.toLocaleString()}</td>
                                             <td><span className="status-pill green">Filed</span></td>
-                                            <td>
-                                                <button onClick={() => onEdit(item)} style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: 10 }}>✏️</button>
-                                                <button onClick={() => onDelete(item._id)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>🗑️</button>
-                                            </td>
+                                            {showActionColumn && (
+                                                <td>
+                                                    {hasWriteAccess && (
+                                                        <>
+                                                            <button onClick={() => onEdit(item)} style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: 10 }}>✏️</button>
+                                                            <button onClick={() => onDelete(item._id)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>🗑️</button>
+                                                        </>
+                                                    )}
+                                                </td>
+                                            )}
                                         </>
                                     ) : type === 'Profile' ? (
                                         <>
                                             <td>{item.name}</td>
                                             <td>{item.email}</td>
                                             <td><span className={`status-pill ${item.role === 'admin' ? 'green' : 'blue'}`}>{item.role}</span></td>
-                                            <td>
-                                                <button onClick={() => onEdit(item)} style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: 10 }}>✏️</button>
-                                                <button onClick={() => onDelete(item._id)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>🗑️</button>
-                                            </td>
+                                            {showActionColumn && (
+                                                <td>
+                                                    <button onClick={() => onEdit(item)} style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: 10 }}>✏️</button>
+                                                    {user?.role === 'admin' && item._id !== user?._id && (
+                                                        <button onClick={() => onDelete(item._id)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>🗑️</button>
+                                                    )}
+                                                </td>
+                                            )}
                                         </>
                                     ) : type === 'Inventory' ? (
                                         <>
@@ -671,10 +791,16 @@ export const ManagementModal = ({ type, data, onClose, onDelete, onAdd, onEdit }
                                             <td>{item.quantity}</td>
                                             <td>Rs. {item.price?.toLocaleString()}</td>
                                             <td><span className={`status-pill ${item.status === 'In Stock' ? 'green' : 'red'}`}>{item.status}</span></td>
-                                            <td>
-                                                <button onClick={() => onEdit(item)} style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: 10 }}>✏️</button>
-                                                <button onClick={() => onDelete(item._id)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>🗑️</button>
-                                            </td>
+                                            {showActionColumn && (
+                                                <td>
+                                                    {hasWriteAccess && (
+                                                        <>
+                                                            <button onClick={() => onEdit(item)} style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: 10 }}>✏️</button>
+                                                            <button onClick={() => onDelete(item._id)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>🗑️</button>
+                                                        </>
+                                                    )}
+                                                </td>
+                                            )}
                                         </>
                                     ) : type === 'Payments' ? (
                                         <>
@@ -683,10 +809,16 @@ export const ManagementModal = ({ type, data, onClose, onDelete, onAdd, onEdit }
                                             <td><span className="status-pill green">{item.status}</span></td>
                                             <td>{item.customerEmail}</td>
                                             <td>{item.date ? new Date(item.date).toLocaleDateString() : ''}</td>
-                                            <td>
-                                                <button onClick={() => onEdit(item)} style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: 10 }}>✏️</button>
-                                                <button onClick={() => onDelete(item._id)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>🗑️</button>
-                                            </td>
+                                            {showActionColumn && (
+                                                <td>
+                                                    {hasWriteAccess && (
+                                                        <>
+                                                            <button onClick={() => onEdit(item)} style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: 10 }}>✏️</button>
+                                                            <button onClick={() => onDelete(item._id)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>🗑️</button>
+                                                        </>
+                                                    )}
+                                                </td>
+                                            )}
                                         </>
                                     ) : type === 'Customers' ? (
                                         <>
@@ -695,10 +827,16 @@ export const ManagementModal = ({ type, data, onClose, onDelete, onAdd, onEdit }
                                             <td>{item.phone}</td>
                                             <td>{item.address}</td>
                                             <td><span className={`status-pill ${item.status === 'Active' ? 'green' : 'red'}`}>{item.status}</span></td>
-                                            <td>
-                                                <button onClick={() => onEdit(item)} style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: 10 }}>✏️</button>
-                                                <button onClick={() => onDelete(item._id)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>🗑️</button>
-                                            </td>
+                                            {showActionColumn && (
+                                                <td>
+                                                    {hasWriteAccess && (
+                                                        <>
+                                                            <button onClick={() => onEdit(item)} style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: 10 }}>✏️</button>
+                                                            <button onClick={() => onDelete(item._id)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>🗑️</button>
+                                                        </>
+                                                    )}
+                                                </td>
+                                            )}
                                         </>
                                     ) : type === 'QualityControl' ? (
                                         <>
@@ -707,30 +845,66 @@ export const ManagementModal = ({ type, data, onClose, onDelete, onAdd, onEdit }
                                             <td>{item.score} / 100</td>
                                             <td><span className={`status-pill ${item.status === 'Pass' ? 'green' : 'red'}`}>{item.status}</span></td>
                                             <td>{item.date ? new Date(item.date).toLocaleDateString() : ''}</td>
-                                            <td>
-                                                <button onClick={() => onEdit(item)} style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: 10 }}>✏️</button>
-                                                <button onClick={() => onDelete(item._id)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>🗑️</button>
-                                            </td>
+                                            {showActionColumn && (
+                                                <td>
+                                                    {hasWriteAccess && (
+                                                        <>
+                                                            <button onClick={() => onEdit(item)} style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: 10 }}>✏️</button>
+                                                            <button onClick={() => onDelete(item._id)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>🗑️</button>
+                                                        </>
+                                                    )}
+                                                </td>
+                                            )}
                                         </>
                                     ) : type === 'Machinery' ? (
                                         <>
                                             <td>{item.machineName}</td>
                                             <td>{item.serialNo}</td>
                                             <td><span className={`status-pill ${item.status === 'Operational' ? 'green' : 'red'}`}>{item.status}</span></td>
-                                            <td>
-                                                <button onClick={() => onEdit(item)} style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: 10 }}>✏️</button>
-                                                <button onClick={() => onDelete(item._id)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>🗑️</button>
-                                            </td>
+                                            {showActionColumn && (
+                                                <td>
+                                                    {hasWriteAccess && (
+                                                        <>
+                                                            <button onClick={() => onEdit(item)} style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: 10 }}>✏️</button>
+                                                            <button onClick={() => onDelete(item._id)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>🗑️</button>
+                                                        </>
+                                                    )}
+                                                </td>
+                                            )}
+                                        </>
+                                    ) : type === 'Invoices' ? (
+                                        <>
+                                            <td>{item.invoiceId}</td>
+                                            <td>{item.customerName}</td>
+                                            <td>Rs. {item.amount?.toLocaleString()}</td>
+                                            <td>{item.dueDate}</td>
+                                            <td><span className={`status-pill ${item.status === 'Paid' ? 'green' : item.status === 'Unpaid' ? 'gold' : 'red'}`}>{item.status}</span></td>
+                                            {showActionColumn && (
+                                                <td>
+                                                    {hasWriteAccess && (
+                                                        <>
+                                                            <button onClick={() => onEdit(item)} style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: 10 }}>✏️</button>
+                                                            <button onClick={() => onDelete(item._id)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>🗑️</button>
+                                                        </>
+                                                    )}
+                                                </td>
+                                            )}
                                         </>
                                     ) : (
                                         <>
                                             <td>{item.userName}</td>
                                             <td>{item.comment}</td>
                                             <td>{item.rating}★</td>
-                                            <td>
-                                                <button onClick={() => onEdit(item)} style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: 10 }}>✏️</button>
-                                                <button onClick={() => onDelete(item._id)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>🗑️</button>
-                                            </td>
+                                            {showActionColumn && (
+                                                <td>
+                                                    {(hasWriteAccess || (type === 'Reviews' && item.userName === user?.name)) && (
+                                                        <button onClick={() => onEdit(item)} style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: 10 }}>✏️</button>
+                                                    )}
+                                                    {(hasWriteAccess || (type === 'Reviews' && item.userName === user?.name)) && (
+                                                        <button onClick={() => onDelete(item._id)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>🗑️</button>
+                                                    )}
+                                                </td>
+                                            )}
                                         </>
                                     )}
                                 </tr>
@@ -765,7 +939,8 @@ export const UniversalAddModal = ({ type, onClose, onSave, record }) => {
         'Customers': ['name', 'email', 'phone', 'address', 'status'],
         'QualityControl': ['batchNo', 'inspector', 'score', 'status'],
         'Machinery': ['machineName', 'serialNo', 'status'],
-        'Profile': ['name', 'email', 'role', 'password']
+        'Profile': ['name', 'email', 'role', 'password'],
+        'Invoices': ['invoiceId', 'customerName', 'amount', 'dueDate', 'status']
     };
     const getDropdownOptions = (fieldName) => {
         if (fieldName === 'role') {
@@ -820,6 +995,13 @@ export const UniversalAddModal = ({ type, onClose, onSave, record }) => {
                     { value: 'Operational', label: 'Operational' },
                     { value: 'Under Repair', label: 'Under Repair' },
                     { value: 'Broken', label: 'Broken' }
+                ];
+            }
+            if (type === 'Invoices') {
+                return [
+                    { value: 'Paid', label: 'Paid' },
+                    { value: 'Unpaid', label: 'Unpaid' },
+                    { value: 'Overdue', label: 'Overdue' }
                 ];
             }
             return [
@@ -904,7 +1086,8 @@ export const AdminPortal = ({ onAction, user }) => {
         { id: 'Taxes', title: 'Tax Records', desc: 'Filing & tax data.', icon: '🏛️' },
         { id: 'Dealers', title: 'Dealers Mgmt', desc: 'Manage authorized dealers.', icon: '🤝' },
         { id: 'QualityControl', title: 'Quality Audits', desc: 'Batch testing & QC.', icon: '🧪' },
-        { id: 'Machinery', title: 'Machinery Logs', desc: 'Farm equipment maintenance.', icon: '⚙️' }
+        { id: 'Machinery', title: 'Machinery Logs', desc: 'Farm equipment maintenance.', icon: '⚙️' },
+        { id: 'Invoices', title: 'Invoices Mgmt', desc: 'Oversee all billing & invoices.', icon: '📄' }
     ];
     return (
         <section className="admin-portal" id="portal">
@@ -938,6 +1121,7 @@ export const DealerDashboard = ({ user, onAction }) => {
         { id: 'Orders', title: 'Dealer Orders', desc: 'Manage purchase & sales orders.', icon: '🛍️' },
         { id: 'Payments', title: 'Stripe Payments', desc: 'Dummy Stripe payment records.', icon: '💳' },
         { id: 'Customers', title: 'Local Customers', desc: 'Manage list of local customers.', icon: '👥' },
+        { id: 'Invoices', title: 'Billing & Invoices', desc: 'View and generate customer invoices.', icon: '📄' },
     ];
     return (
         <section className="admin-portal" style={{ background: 'linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%)', padding: '80px 5%', borderTop: '1px solid #e2e8f0' }}>
@@ -970,6 +1154,7 @@ export const MemberDashboard = ({ user, onAction, onTrack }) => {
         { id: 'Track', title: 'Track Order', desc: 'Live delivery status.', icon: '📍', action: onTrack },
         { id: 'Reviews', title: 'My Reviews', desc: 'Your feedback logs.', icon: '📝' },
         { id: 'Dealers', title: 'Dealer Search', desc: 'Find local dealers.', icon: '🗺️' },
+        { id: 'Invoices', title: 'My Invoices', desc: 'View and pay your bills.', icon: '📄' },
         { id: 'Profile', title: 'My Account', desc: 'Settings & documents.', icon: '👤' },
         { id: 'Support', title: 'Agri Support', desc: 'Chat with experts.', icon: '🎧' },
     ];

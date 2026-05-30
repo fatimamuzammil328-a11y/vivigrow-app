@@ -15,7 +15,7 @@ const Review = require('./models/Review');
 const Dealer = require('./models/Dealer');
 const { 
     Warehouse, Salary, Transport, SalesRecord, ProfitLoss, RawMaterial, Production, ReturnRecord, Safety, TaxRecord,
-    Inventory, Payment, Customer, QualityControl, Machinery
+    Inventory, Payment, Customer, QualityControl, Machinery, Invoice
 } = require('./models/ERPModels');
 
 const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/Agrofertilizers";
@@ -174,6 +174,11 @@ const machineries = [
     { machineName: "Automatic Bagging Machine", serialNo: "ABM-8834-B", status: "Operational" }
 ];
 
+const invoices = [
+    { invoiceId: "INV-2026-101", customerName: "Khan Brothers Farms", amount: 15600, dueDate: "15-Jun-2026", status: "Unpaid" },
+    { invoiceId: "INV-2026-102", customerName: "Green Growth Co.", amount: 28900, dueDate: "10-Jun-2026", status: "Paid" }
+];
+
 async function seedAll() {
     try {
         console.log('⏳ Connecting to MongoDB...');
@@ -275,7 +280,11 @@ async function seedAll() {
         await Machinery.insertMany(machineries);
         console.log('⚙️ Seeded Machinery logs');
 
-        console.log('\n🚀 ALL VIVIGROW DATA SEEDED SUCCESSFULLY WITH 19 MODULES COMPLETED!');
+        await Invoice.deleteMany({});
+        await Invoice.insertMany(invoices);
+        console.log('📄 Seeded Invoices');
+
+        console.log('\n🚀 ALL VIVIGROW DATA SEEDED SUCCESSFULLY WITH 20 MODULES COMPLETED!');
         process.exit(0);
     } catch (err) {
         console.error('❌ Seed Error:', err.message);
