@@ -767,6 +767,81 @@ export const UniversalAddModal = ({ type, onClose, onSave, record }) => {
         'Machinery': ['machineName', 'serialNo', 'status'],
         'Profile': ['name', 'email', 'role', 'password']
     };
+    const getDropdownOptions = (fieldName) => {
+        if (fieldName === 'role') {
+            return [
+                { value: 'admin', label: 'Admin' },
+                { value: 'dealer', label: 'Dealer' },
+                { value: 'farmer', label: 'Farmer' }
+            ];
+        }
+        if (fieldName === 'status') {
+            if (type === 'Dealers') {
+                return [
+                    { value: 'Active', label: 'Active' },
+                    { value: 'Pending', label: 'Pending' },
+                    { value: 'Inactive', label: 'Inactive' }
+                ];
+            }
+            if (type === 'Warehouse') {
+                return [
+                    { value: 'Available', label: 'Available' },
+                    { value: 'Full', label: 'Full' },
+                    { value: 'Maintenance', label: 'Maintenance' }
+                ];
+            }
+            if (type === 'Salaries') {
+                return [
+                    { value: 'Paid', label: 'Paid' },
+                    { value: 'Pending', label: 'Pending' }
+                ];
+            }
+            if (type === 'Transport') {
+                return [
+                    { value: 'Available', label: 'Available' },
+                    { value: 'In Transit', label: 'In Transit' },
+                    { value: 'Maintenance', label: 'Maintenance' }
+                ];
+            }
+            if (type === 'Production') {
+                return [
+                    { value: 'In Process', label: 'In Process' },
+                    { value: 'Completed', label: 'Completed' }
+                ];
+            }
+            if (type === 'Inventory') {
+                return [
+                    { value: 'In Stock', label: 'In Stock' },
+                    { value: 'Out of Stock', label: 'Out of Stock' }
+                ];
+            }
+            if (type === 'Machinery') {
+                return [
+                    { value: 'Operational', label: 'Operational' },
+                    { value: 'Under Repair', label: 'Under Repair' },
+                    { value: 'Broken', label: 'Broken' }
+                ];
+            }
+            return [
+                { value: 'Active', label: 'Active' },
+                { value: 'Pending', label: 'Pending' }
+            ];
+        }
+        if (fieldName === 'paymentStatus') {
+            return [
+                { value: 'Paid', label: 'Paid' },
+                { value: 'Credit', label: 'Credit' }
+            ];
+        }
+        if (fieldName === 'result') {
+            return [
+                { value: 'Passed', label: 'Passed' },
+                { value: 'Failed', label: 'Failed' }
+            ];
+        }
+        return null;
+    };
+
     const fields = fieldMap[type] || [];
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -783,7 +858,7 @@ export const UniversalAddModal = ({ type, onClose, onSave, record }) => {
                     {fields.map(f => (
                         <div key={f} className="form-group" style={{ marginBottom: 15 }}>
                             <label style={{ textTransform: 'capitalize' }}>{f.replace(/([A-Z])/g, ' $1')}</label>
-                            {f === 'role' ? (
+                            {getDropdownOptions(f) ? (
                                 <select
                                     required
                                     className="form-input"
@@ -791,10 +866,10 @@ export const UniversalAddModal = ({ type, onClose, onSave, record }) => {
                                     onChange={(e) => setForm({...form, [f]: e.target.value})}
                                     style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #ccc', background: 'white' }}
                                 >
-                                    <option value="">Select Role...</option>
-                                    <option value="admin">Admin</option>
-                                    <option value="dealer">Dealer</option>
-                                    <option value="farmer">Farmer</option>
+                                    <option value="">Select...</option>
+                                    {getDropdownOptions(f).map(opt => (
+                                        <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                    ))}
                                 </select>
                             ) : (
                                 <input 
