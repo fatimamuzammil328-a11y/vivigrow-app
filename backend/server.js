@@ -2,10 +2,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
-const dns = require('dns');
-
-// Fix for MongoDB Atlas "querySrv ECONNREFUSED" on some ISPs
-dns.setServers(['8.8.8.8', '8.8.4.4']);
 
 require('dotenv').config();
 
@@ -18,35 +14,36 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
+// Cached connection for serverless (Vercel)
+let isConnected = false;
+
 const connectDB = async () => {
+    if (isConnected && mongoose.connection.readyState === 1) {
+        return;
+    }
     try {
         console.log('  ⏳  Connecting to MongoDB Atlas...');
-        
         await mongoose.connect(MONGODB_URI, {
-            serverSelectionTimeoutMS: 5000,
+            serverSelectionTimeoutMS: 10000,
+            bufferCommands: false,
         });
-
-        console.log('');
+        isConnected = true;
         console.log('  ✅  Connected Successfully!');
-        console.log(`  📦  Status: Connected to Cluster`);
-        console.log('');
     } catch (err) {
-        console.error('');
         console.error('  ❌  Connection Error:', err.message);
-        
-        console.warn('  ⚠️  Trying to connect to local database...');
-        try {
-            await mongoose.connect('mongodb://localhost:27017/Agrofertilizers');
-            console.log('  ✅  Connected to local fallback.');
-        } catch (localErr) {
-            console.error('  ❌  Local fallback also failed.');
-        }
-        
-        console.log('');
+        isConnected = false;
     }
 };
 
-connectDB();
+// Middleware: ensure DB is connected before handling any request
+app.use(async (req, res, next) => {
+    try {
+        await connectDB();
+        next();
+    } catch (err) {
+        res.status(500).json({ error: 'Database connection failed' });
+    }
+});
 
 const authRoutes = require('./routes/auth');
 const productRoutes = require('./routes/products');
