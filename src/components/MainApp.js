@@ -12,7 +12,6 @@ import {
 const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000/api";
 
 function MainApp() {
-    useReveal();
     const { user } = useAuth();
     const { toasts, show: showToast } = useToast();
     const [products, setProducts] = useState(INITIAL_PRODUCTS);
@@ -36,6 +35,8 @@ function MainApp() {
     const [showReviewSubmit, setShowReviewSubmit] = useState(false);
     const [showUniversalAdd, setShowUniversalAdd] = useState(null);
     const [editingRecord, setEditingRecord] = useState(null);
+
+    useReveal([products, reviews, adminMode]);
 
     useEffect(() => {
         fetch(`${API_URL}/products`)
