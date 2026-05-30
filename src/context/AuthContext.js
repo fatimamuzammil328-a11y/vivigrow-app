@@ -46,39 +46,47 @@ export function AuthProvider({ children }) {
     verifyToken();
   }, []);
 
-  const register = useCallback(async ({ name, email, password, role }) => {
-    const res = await fetch(`${API_URL}/auth/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, password, role: role || 'Farmer' })
-    });
-    const data = await res.json();
+    const register = useCallback(async ({ name, email, password, role }) => {
+        try {
+            const res = await fetch(`${API_URL}/auth/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, password, role: role || 'Farmer' })
+            });
+            const data = await res.json();
+            if (res.ok && data.ok) {
+                localStorage.setItem('vg_token', data.token);
+                localStorage.setItem('vg_session', JSON.stringify(data.user));
+                setUser(data.user);
+                return { ok: true };
+            }
+            return { ok: false, error: data.error || 'Registration failed.' };
+        } catch (err) {
+            console.error('Register error:', err);
+            return { ok: false, error: 'An unexpected error occurred.' };
+        }
+    }, []);
 
-    if (data.ok) {
-      localStorage.setItem("vg_token", data.token);
-      localStorage.setItem("vg_session", JSON.stringify(data.user));
-      setUser(data.user);
-      return { ok: true };
-    }
-    return { ok: false, error: data.error || "Registration failed." };
-  }, []);
-
-  const login = useCallback(async ({ email, password }) => {
-    const res = await fetch(`${API_URL}/auth/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password })
-    });
-    const data = await res.json();
-
-    if (data.ok) {
-      localStorage.setItem("vg_token", data.token);
-      localStorage.setItem("vg_session", JSON.stringify(data.user));
-      setUser(data.user);
-      return { ok: true };
-    }
-    return { ok: false, error: data.error || "Incorrect email or password." };
-  }, []);
+    const login = useCallback(async ({ email, password }) => {
+        try {
+            const res = await fetch(`${API_URL}/auth/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+            const data = await res.json();
+            if (res.ok && data.ok) {
+                localStorage.setItem('vg_token', data.token);
+                localStorage.setItem('vg_session', JSON.stringify(data.user));
+                setUser(data.user);
+                return { ok: true };
+            }
+            return { ok: false, error: data.error || 'Incorrect email or password.' };
+        } catch (err) {
+            console.error('Login error:', err);
+            return { ok: false, error: 'An unexpected error occurred.' };
+        }
+    }, []);
 
   const logout = useCallback(() => {
     localStorage.removeItem("vg_token");
