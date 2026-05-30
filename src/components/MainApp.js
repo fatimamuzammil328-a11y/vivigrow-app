@@ -15,7 +15,7 @@ function MainApp() {
     const { user } = useAuth();
     const { toasts, show: showToast } = useToast();
     const [products, setProducts] = useState(INITIAL_PRODUCTS);
-    const [adminMode, setAdminMode] = useState(false);
+
     const [showAddModal, setShowAddModal] = useState(false);
     const [editProduct, setEditProduct] = useState(null);
     const [deleteProduct, setDeleteProduct] = useState(null);
@@ -54,7 +54,7 @@ function MainApp() {
     }, []);
 
     useEffect(() => {
-        if (adminMode) {
+        if (user?.role === 'admin') {
             fetch(`${API_URL}/orders`)
                 .then(res => res.json())
                 .then(data => { if (Array.isArray(data)) setErpData(prev => [...prev, ...data]); })
@@ -65,7 +65,7 @@ function MainApp() {
                 .then(data => { if (Array.isArray(data)) setErpData(prev => [...prev, ...data]); })
                 .catch(() => {});
         }
-    }, [adminMode]);
+    }, [user]);
 
     const nextId = useRef(products.length + 10);
 
@@ -242,9 +242,6 @@ function MainApp() {
     return (
         <>
             <Nav
-                user={user}
-                adminMode={adminMode}
-                onToggleAdmin={() => setAdminMode((v) => !v)}
                 onAction={(m) => handleAdminAction(m)}
                 cartCount={cartCount}
                 onOpenCart={() => setShowCart(true)}
@@ -255,20 +252,20 @@ function MainApp() {
                 <Ticker />
                 <Products
                     products={products}
-                    adminMode={adminMode}
+                    adminMode={user?.role === 'admin'}
                     onAdd={() => setShowAddModal(true)}
                     onEdit={setEditProduct}
                     onDelete={setDeleteProduct}
                     onAddToCart={handleAddToCart}
                 />
 
-                {user && user.role === 'dealer' ? (
-                    <DealerDashboard
+                {user?.role === 'admin' ? (
+                    <AdminPortal
                         user={user}
                         onAction={handleAdminAction}
                     />
-                ) : adminMode ? (
-                    <AdminPortal
+                ) : user?.role === 'dealer' ? (
+                    <DealerDashboard
                         user={user}
                         onAction={handleAdminAction}
                     />
@@ -320,7 +317,7 @@ function MainApp() {
                     type={managementModal}
                     data={erpData}
                     user={user}
-                    adminMode={adminMode}
+                    adminMode={user?.role === 'admin'}
                     onClose={() => { setManagementModal(null); setEditingRecord(null); }}
                     onDelete={handleDeleteERP}
                     onAdd={(t) => { setEditingRecord(null); setShowUniversalAdd(t); }}

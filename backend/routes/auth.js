@@ -107,60 +107,7 @@ router.get('/me', async (req, res) => {
     }
 });
 
-router.put('/update-profile', async (req, res) => {
-    try {
-        const authHeader = req.headers.authorization;
-        if (!authHeader || !authHeader.startsWith('Bearer ')) {
-            return res.status(401).json({ ok: false, error: 'No token provided.' });
-        }
-        const token = authHeader.split(' ')[1];
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        
-        const updates = { ...req.body };
-        if (updates.password && updates.password.trim() !== '') {
-            const salt = await bcrypt.genSalt(10);
-            updates.password = await bcrypt.hash(updates.password, salt);
-        } else {
-            delete updates.password;
-        }
 
-        const user = await User.findByIdAndUpdate(decoded.id, updates, { new: true }).select('-password');
-        if (!user) return res.status(404).json({ ok: false, error: 'User not found.' });
-        
-        const newToken = generateToken(user);
-
-        res.json({
-            ok: true,
-            token: newToken,
-            user: {
-                id: user._id,
-                name: user.name,
-                email: user.email,
-                role: user.role
-            }
-        });
-    } catch (err) {
-        res.status(500).json({ ok: false, error: err.message });
-    }
-});
-
-router.delete('/delete-account', async (req, res) => {
-    try {
-        const authHeader = req.headers.authorization;
-        if (!authHeader || !authHeader.startsWith('Bearer ')) {
-            return res.status(401).json({ ok: false, error: 'No token provided.' });
-        }
-        const token = authHeader.split(' ')[1];
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        
-        const user = await User.findByIdAndDelete(decoded.id);
-        if (!user) return res.status(404).json({ ok: false, error: 'User not found.' });
-        
-        res.json({ ok: true, message: 'Account deleted successfully.' });
-    } catch (err) {
-        res.status(500).json({ ok: false, error: err.message });
-    }
-});
 
 router.get('/users', async (req, res) => {
     try {

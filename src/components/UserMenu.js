@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 
-function UserMenu({ user, onLogout, adminMode, onToggleAdmin }) {
+function UserMenu({ user, onLogout }) {
     const [open, setOpen] = useState(false);
     const ref = useRef();
 
@@ -25,9 +25,6 @@ function UserMenu({ user, onLogout, adminMode, onToggleAdmin }) {
                         <div className="dd-name">{user.name}</div>
                         <div className="dd-email">{user.email}</div>
                     </div>
-                    <button className="dd-item" onClick={() => { onToggleAdmin && onToggleAdmin(); setOpen(false); }}>
-                        {adminMode ? "🛑 Exit Portal" : "⚙️ Admin Portal"}
-                    </button>
                     <div className="dd-sep" />
                     <button className="dd-item danger" onClick={() => { onLogout(); setOpen(false); }}>
                         ↩ Sign Out

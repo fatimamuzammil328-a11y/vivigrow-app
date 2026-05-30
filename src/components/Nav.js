@@ -3,7 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import UserMenu from "./UserMenu";
 
-const Nav = ({ adminMode, onToggleAdmin, cartCount, onOpenCart, onOpenTrackOrder, onOpenOrders, onOpenReviews, onOpenDealers, onAction }) => {
+const Nav = ({ cartCount, onOpenCart, onOpenTrackOrder, onAction }) => {
     const { user, logout } = useAuth();
     const { theme, toggleTheme } = useTheme();
     const [scrolled, setScrolled] = useState(false);
@@ -45,14 +45,7 @@ const Nav = ({ adminMode, onToggleAdmin, cartCount, onOpenCart, onOpenTrackOrder
                     </ul>
 
                     <div className="nav-actions">
-                        {user && onToggleAdmin && (
-                            <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginRight: '10px' }}>
-                                <div onClick={onToggleAdmin} style={{ background: adminMode ? 'var(--accent)' : 'rgba(255,255,255,0.1)', color: adminMode ? '#000' : '#fff', padding: '6px 16px', borderRadius: '100px', fontSize: '0.75rem', fontWeight: 900, letterSpacing: '0.05em', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '8px', border: '1px solid rgba(255,255,255,0.3)', cursor: 'pointer', transition: 'all 0.3s' }}>
-                                    <span style={{ width: 8, height: 8, background: adminMode ? '#fff' : 'rgba(255,255,255,0.4)', borderRadius: '50%', boxShadow: adminMode ? '0 0 8px #fff' : 'none', animation: adminMode ? 'pulse 1.5s infinite' : 'none' }}></span>
-                                    {adminMode ? 'Exit Portal' : 'Admin Portal'}
-                                </div>
-                            </div>
-                        )}
+
                         <div className="theme-toggle" onClick={toggleTheme}>
                             {theme === 'light' ? '🌙' : '☀️'}
                         </div>
