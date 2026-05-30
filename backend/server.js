@@ -49,10 +49,16 @@ const connectDB = async () => {
 connectDB();
 
 const authRoutes = require('./routes/auth');
-const crudRoutes = require('./routes/crud');
+const productRoutes = require('./routes/products');
+const orderRoutes = require('./routes/orders');
+const reviewRoutes = require('./routes/reviews');
 
 app.use('/api/auth', authRoutes);
-app.use('/api', crudRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/orders', orderRoutes);
+app.use('/api/reviews', reviewRoutes);
+app.use('/api/dealers', require('./routes/dealers'));
+app.use('/api/erp', require('./routes/erp'));
 
 app.get('/api/health', (req, res) => {
     res.json({
