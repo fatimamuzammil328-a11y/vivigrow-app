@@ -53,19 +53,7 @@ function MainApp() {
             .catch(() => {});
     }, []);
 
-    useEffect(() => {
-        if (user?.role === 'admin') {
-            fetch(`${API_URL}/orders`)
-                .then(res => res.json())
-                .then(data => { if (Array.isArray(data)) setErpData(prev => [...prev, ...data]); })
-                .catch(() => {});
-            
-            fetch(`${API_URL}/dealers`)
-                .then(res => res.json())
-                .then(data => { if (Array.isArray(data)) setErpData(prev => [...prev, ...data]); })
-                .catch(() => {});
-        }
-    }, [user]);
+
 
     const nextId = useRef(products.length + 10);
 
