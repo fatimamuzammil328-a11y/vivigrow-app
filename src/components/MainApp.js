@@ -320,6 +320,7 @@ function MainApp() {
                     type={managementModal}
                     data={erpData}
                     user={user}
+                    adminMode={adminMode}
                     onClose={() => { setManagementModal(null); setEditingRecord(null); }}
                     onDelete={handleDeleteERP}
                     onAdd={(t) => { setEditingRecord(null); setShowUniversalAdd(t); }}

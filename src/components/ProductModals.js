@@ -463,8 +463,9 @@ export const TrackOrderModal = ({ isOpen, onClose }) => {
     );
 };
 
-export const ManagementModal = ({ type, data, onClose, onDelete, onAdd, onEdit, user }) => {
+export const ManagementModal = ({ type, data, onClose, onDelete, onAdd, onEdit, user, adminMode }) => {
     const getWriteAccess = () => {
+        if (adminMode) return true;
         if (!user) return false;
         if (user.role === 'admin') return true;
         if (user.role === 'dealer') {
