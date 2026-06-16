@@ -825,10 +825,170 @@ const GlobalStyles = () => (
     .df-item { display: flex; align-items: center; gap: 8px; font-size: .85rem; font-weight: 700; color: var(--navy); }
     .df-item span { font-size: 1.2rem; }
 
-    @media (max-width: 768px) {
+      @media (max-width: 768px) {
       .detail-grid { grid-template-columns: 1fr; }
       .detail-img-side { min-height: 250px; }
       .detail-info-side { padding: 24px; }
+      
+      /* Mobile Hero Grid Fix */
+      .hero {
+        grid-template-columns: 1fr !important;
+        padding: 120px 20px 60px !important;
+        gap: 40px !important;
+        text-align: center !important;
+        min-height: auto !important;
+        background: linear-gradient(180deg, var(--bg) 60%, var(--accent-light) 60%) !important;
+      }
+      .hdesc {
+        margin: 0 auto 24px !important;
+      }
+      .hbtns {
+        justify-content: center !important;
+      }
+      .hstats {
+        justify-content: center !important;
+        gap: 20px !important;
+      }
+      .dashboard-mock {
+        width: 100% !important;
+        max-width: 380px !important;
+      }
+
+      /* Mobile Products Grid Fix */
+      .products {
+        padding: 60px 20px !important;
+      }
+      .sec-head {
+        flex-direction: column !important;
+        align-items: center !important;
+        text-align: center !important;
+        gap: 20px !important;
+      }
+      .prod-grid {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+      }
+
+      /* Mobile About Section Grid Fix */
+      .about {
+        padding: 60px 20px !important;
+      }
+      .about-grid {
+        grid-template-columns: 1fr !important;
+        gap: 40px !important;
+        text-align: center !important;
+      }
+      .feat-grid {
+        grid-template-columns: 1fr !important;
+      }
+
+      /* Mobile Process steps Grid Fix */
+      .process {
+        padding: 60px 20px !important;
+      }
+      .steps {
+        grid-template-columns: 1fr !important;
+        gap: 30px !important;
+      }
+      .steps::before {
+        display: none !important;
+      }
+
+      /* Mobile Testimonials Grid Fix */
+      .testi {
+        padding: 60px 20px !important;
+      }
+      .tgrid {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+      }
+
+      /* Mobile CTA Grid Fix */
+      .cta {
+        padding: 60px 20px !important;
+      }
+
+      /* Mobile Footer Grid Fix */
+      footer {
+        padding: 40px 20px 20px !important;
+      }
+      .foot-top {
+        grid-template-columns: 1fr !important;
+        gap: 32px !important;
+        text-align: center !important;
+      }
+      .flogo {
+        justify-content: center !important;
+      }
+      .socials {
+        justify-content: center !important;
+      }
+      .foot-bottom {
+        flex-direction: column !important;
+        gap: 12px !important;
+        text-align: center !important;
+      }
+
+      /* Mobile Modals adjustments */
+      .modal-overlay {
+        padding: 12px !important;
+      }
+      .modal {
+        border-radius: 16px !important;
+      }
+      .modal-body {
+        padding: 16px 20px 20px !important;
+      }
+      .form-row {
+        grid-template-columns: 1fr !important;
+        gap: 0 !important;
+      }
+
+      /* Mobile Auth adjustments */
+      .auth-page {
+        padding: 20px 10px !important;
+      }
+      .auth-form-wrap {
+        padding: 24px 20px !important;
+        border-radius: 20px !important;
+      }
+      .af-row {
+        grid-template-columns: 1fr !important;
+        gap: 0 !important;
+      }
+      .af-role-toggle {
+        flex-wrap: wrap !important;
+      }
+      .role-opt {
+        padding: 8px !important;
+        font-size: 0.7rem !important;
+      }
+      .back-home-btn {
+        position: relative !important;
+        top: 0 !important;
+        left: 0 !important;
+        margin-bottom: 20px !important;
+        display: inline-flex !important;
+      }
+
+      /* Landing Visual Mobile Support */
+      .landing-page {
+        padding: 80px 20px !important;
+        min-height: auto !important;
+      }
+      .landing-content {
+        grid-template-columns: 1fr !important;
+        text-align: center !important;
+        gap: 40px !important;
+      }
+      .landing-text {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+      }
+      .landing-text p {
+        margin: 0 auto 30px !important;
+      }
     }
   `}</style>
 );
