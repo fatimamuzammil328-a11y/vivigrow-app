@@ -166,7 +166,6 @@ function MainApp() {
         
         if (moduleName === 'Orders') url = `${API_URL}/orders`;
         else if (moduleName === 'Reviews') url = `${API_URL}/reviews`;
-        else if (moduleName === 'Support') url = `${API_URL}/reviews`;
         else if (moduleName === 'Profile') url = `${API_URL}/auth/users`;
         else if (moduleName === 'Dealers') url = `${API_URL}/dealers`;
 
@@ -181,7 +180,6 @@ function MainApp() {
             let url = `${API_URL}/erp/${managementModal.toLowerCase()}/${id}`;
             if (managementModal === 'Orders') url = `${API_URL}/orders/${id}`;
             else if (managementModal === 'Reviews') url = `${API_URL}/reviews/${id}`;
-            else if (managementModal === 'Support') url = `${API_URL}/reviews/${id}`;
             else if (managementModal === 'Profile') url = `${API_URL}/auth/users/${id}`;
             else if (managementModal === 'Dealers') url = `${API_URL}/dealers/${id}`;
 
@@ -196,7 +194,6 @@ function MainApp() {
             let url = `${API_URL}/erp/${managementModal.toLowerCase()}`;
             if (managementModal === 'Orders') url = `${API_URL}/orders`;
             else if (managementModal === 'Reviews') url = `${API_URL}/reviews`;
-            else if (managementModal === 'Support') url = `${API_URL}/reviews`;
             else if (managementModal === 'Profile') url = `${API_URL}/auth/users`;
             else if (managementModal === 'Dealers') url = `${API_URL}/dealers`;
 

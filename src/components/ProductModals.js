@@ -520,6 +520,12 @@ export const ManagementModal = ({ type, data, onClose, onDelete, onAdd, onEdit, 
                 item.customerName?.toLowerCase().includes('chaudhary') ||
                 !item.customerName
             );
+        } else if (type === 'Support' && user?.role === 'farmer') {
+            const farmerKeyword = user?.name?.split(' ')[0]?.toLowerCase() || '';
+            result = result.filter(item => 
+                item.userName?.toLowerCase().includes(farmerKeyword) ||
+                item.userName?.toLowerCase().includes('chaudhary')
+            );
         }
 
         if (searchQuery) {
@@ -597,6 +603,8 @@ export const ManagementModal = ({ type, data, onClose, onDelete, onAdd, onEdit, 
                                 <tr><th>Machine Name</th><th>Serial No</th><th>Status</th>{showActionColumn && <th>Action</th>}</tr>
                             ) : type === 'Invoices' ? (
                                 <tr><th>Invoice ID</th><th>Customer Name</th><th>Amount</th><th>Due Date</th><th>Status</th>{showActionColumn && <th>Action</th>}</tr>
+                            ) : type === 'Support' ? (
+                                <tr><th>User</th><th>Subject</th><th>Message</th><th>Status</th><th>Date</th>{showActionColumn && <th>Action</th>}</tr>
                             ) : (
                                 <tr><th>User</th><th>Comment</th><th>Rating</th>{showActionColumn && <th>Action</th>}</tr>
                             )}
@@ -958,8 +966,9 @@ export const ManagementModal = ({ type, data, onClose, onDelete, onAdd, onEdit, 
 };
 
 export const UniversalAddModal = ({ type, onClose, onSave, record }) => {
+    const { user } = useAuth();
     const isEdit = !!record;
-    const [form, setForm] = useState(record || {});
+    const [form, setForm] = useState(record || (type === 'Support' ? { userName: user?.name || '', status: 'Open' } : {}));
     const fieldMap = {
         'Warehouse': ['location', 'capacity', 'manager', 'status'],
         'Salaries': ['employeeName', 'amount', 'month', 'status'],
@@ -973,7 +982,7 @@ export const UniversalAddModal = ({ type, onClose, onSave, record }) => {
         'Taxes': ['year', 'taxType', 'amountPaid'],
         'Dealers': ['name', 'location', 'region', 'contact', 'status'],
         'Orders': ['orderId', 'customerName', 'totalAmount', 'paymentMethod', 'status'],
-        'Support': ['userName', 'comment', 'rating'],
+        'Support': ['userName', 'subject', 'message', 'status'],
         'Inventory': ['itemName', 'sku', 'quantity', 'price', 'status'],
         'Payments': ['transactionId', 'amount', 'currency', 'status', 'customerEmail'],
         'Customers': ['name', 'email', 'phone', 'address', 'status'],
@@ -1042,6 +1051,13 @@ export const UniversalAddModal = ({ type, onClose, onSave, record }) => {
                     { value: 'Paid', label: 'Paid' },
                     { value: 'Unpaid', label: 'Unpaid' },
                     { value: 'Overdue', label: 'Overdue' }
+                ];
+            }
+            if (type === 'Support') {
+                return [
+                    { value: 'Open', label: 'Open' },
+                    { value: 'In Progress', label: 'In Progress' },
+                    { value: 'Resolved', label: 'Resolved' }
                 ];
             }
             return [

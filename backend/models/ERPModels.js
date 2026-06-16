@@ -138,7 +138,16 @@ const invoiceSchema = new mongoose.Schema({
 });
 const Invoice = mongoose.model('Invoice', invoiceSchema);
 
+const supportTicketSchema = new mongoose.Schema({
+    userName: { type: String, required: true },
+    subject: { type: String, required: true },
+    message: { type: String, required: true },
+    status: { type: String, enum: ['Open', 'In Progress', 'Resolved'], default: 'Open' },
+    date: { type: Date, default: Date.now }
+});
+const SupportTicket = mongoose.model('SupportTicket', supportTicketSchema);
+
 module.exports = { 
     Warehouse, Salary, Transport, SalesRecord, ProfitLoss, RawMaterial, Production, ReturnRecord, Safety, TaxRecord,
-    Inventory, Payment, Customer, QualityControl, Machinery, Invoice
+    Inventory, Payment, Customer, QualityControl, Machinery, Invoice, SupportTicket
 };

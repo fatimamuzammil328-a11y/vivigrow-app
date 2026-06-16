@@ -1,7 +1,7 @@
 const express = require('express');
 const { 
     Warehouse, Salary, Transport, SalesRecord, ProfitLoss, RawMaterial, Production, ReturnRecord, Safety, TaxRecord,
-    Inventory, Payment, Customer, QualityControl, Machinery, Invoice
+    Inventory, Payment, Customer, QualityControl, Machinery, Invoice, SupportTicket
 } = require('../models/ERPModels');
 const router = express.Router();
 
@@ -42,5 +42,6 @@ router.use('/customers', createERPRoute(Customer));
 router.use('/qualitycontrol', createERPRoute(QualityControl));
 router.use('/machinery', createERPRoute(Machinery));
 router.use('/invoices', createERPRoute(Invoice));
+router.use('/support', createERPRoute(SupportTicket));
 
 module.exports = router;
