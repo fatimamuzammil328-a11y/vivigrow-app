@@ -1000,19 +1000,37 @@ const GlobalStyles = () => (
       /* Dashboard Modal Mobile Fixes */
       .dashboard-modal {
         padding: 0 !important;
+        max-width: 95vw !important;
+        margin: 0 auto !important;
       }
       .dashboard-modal .modal-header {
         flex-direction: column !important;
         align-items: flex-start !important;
         gap: 12px !important;
+        padding: 20px 20px 0 !important;
       }
       .dashboard-modal .modal-header > div {
         flex-wrap: wrap !important;
+        width: 100% !important;
+        justify-content: space-between !important;
+      }
+      .dashboard-modal .modal-body {
+        padding: 16px 20px 20px !important;
+        max-width: 100% !important;
+        overflow-x: auto !important;
       }
       .admin-table {
         display: block !important;
+        width: 100% !important;
         overflow-x: auto !important;
         white-space: nowrap !important;
+      }
+      /* User Menu Mobile Fixes to prevent nav bar horizontal overflow */
+      .avatar-name, .avatar-chevron {
+        display: none !important;
+      }
+      .user-avatar-btn {
+        padding: 6px !important;
       }
     }
   `}</style>

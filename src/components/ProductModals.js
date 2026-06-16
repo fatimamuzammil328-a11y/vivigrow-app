@@ -938,6 +938,24 @@ export const ManagementModal = ({ type, data, onClose, onDelete, onAdd, onEdit, 
                                                 </td>
                                             )}
                                         </>
+                                    ) : type === 'Support' ? (
+                                        <>
+                                            <td>{item.userName}</td>
+                                            <td>{item.subject}</td>
+                                            <td>{item.message}</td>
+                                            <td><span className={`status-pill ${item.status === 'Resolved' ? 'green' : item.status === 'In Progress' ? 'blue' : 'gold'}`}>{item.status}</span></td>
+                                            <td>{item.date ? new Date(item.date).toLocaleDateString() : ''}</td>
+                                            {showActionColumn && (
+                                                <td>
+                                                    {hasWriteAccess && (
+                                                        <>
+                                                            <button onClick={() => onEdit(item)} style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: 10 }}>✏️</button>
+                                                            <button onClick={() => onDelete(item._id)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>🗑️</button>
+                                                        </>
+                                                    )}
+                                                </td>
+                                            )}
+                                        </>
                                     ) : (
                                         <>
                                             <td>{item.userName}</td>
