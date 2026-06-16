@@ -7,7 +7,7 @@ function LandingPage({ onGoLogin, onGoSignup }) {
             <div className="blob b2"></div>
 
             {/* Top Bar */}
-            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, padding: '30px 60px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', zIndex: 100 }}>
+            <div className="landing-top-bar">
                 <div className="logo" style={{ cursor: 'default' }}>
                     <span className="logo-icon">🌿</span>
                 </div>
@@ -21,16 +21,16 @@ function LandingPage({ onGoLogin, onGoSignup }) {
                     <div className="badge" style={{ background: 'rgba(212,163,115,0.1)', color: 'var(--secondary)', border: '1px solid rgba(212,163,115,0.2)' }}>
                         <span className="badge-dot" style={{ background: 'var(--secondary)' }}></span> Official Marketing Portal
                     </div>
-                    <h1 style={{ fontSize: '3.8rem', lineHeight: 1.1, marginBottom: 25 }}>
+                    <h1 className="landing-title">
                         AgroFertilizers <br />
                         <span style={{ color: 'var(--secondary)' }}>Marketing Website</span> <br />
-                        <span style={{ fontSize: '2.5rem', opacity: 0.8 }}>for ViviGrow</span>
+                        <span className="landing-title-sub">for ViviGrow</span>
                     </h1>
                     <p style={{ fontSize: '1.2rem', color: '#444', marginBottom: 40, maxWidth: '550px' }}>
                         Empowering South Asian agriculture with precision soil science and data-driven fertilizer solutions. 
                         Join 12,000+ happy farmers achieving 40% higher yields.
                     </p>
-                    <div className="landing-btns" style={{ display: 'flex', gap: 20 }}>
+                    <div className="landing-btns">
                         <button className="btn-blue" onClick={onGoSignup} style={{ padding: '18px 45px', fontSize: '1.1rem', fontWeight: 800, borderRadius: '16px', background: 'var(--primary)', color: '#fff', boxShadow: '0 10px 30px rgba(27,67,50,0.3)' }}>
                             Join the Network
                         </button>

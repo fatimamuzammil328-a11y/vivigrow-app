@@ -192,13 +192,14 @@ const GlobalStyles = () => (
     .admin-dot { width:7px; height:7px; border-radius:50%; background:currentColor; }
 
     /* ── LANDING PAGE ── */
-    .landing-page { min-height:100vh; background: var(--bg); display: flex; align-items: center; justify-content: center; padding: 0 80px; overflow: hidden; position: relative; }
-    .landing-content { max-width: 1000px; width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; z-index: 2; position: relative; padding-top: 40px; }
-    .landing-text { position: relative; z-index: 5; text-align: left; }
-    .landing-text h1 { font-family: 'Fraunces', serif; font-size: clamp(2.5rem, 4.5vw, 3.5rem); line-height: 1.15; margin-bottom: 24px; color: var(--text); letter-spacing: -0.01em; }
-    .landing-text h1 span { color: var(--secondary); display: block; font-style: italic; }
-    .landing-text p { font-size: 1.1rem; color: var(--muted); margin-bottom: 40px; max-width: 440px; line-height: 1.8; }
-    .landing-btns { display: flex; gap: 16px; align-items: center; }
+    .landing-top-bar { position: absolute; top: 0; left: 0; right: 0; padding: 30px 60px; display: flex; justify-content: space-between; align-items: center; z-index: 100; }
+    .landing-page { min-height:100vh; background: var(--bg); display: flex; align-items: center; justify-content: center; padding: 0 80px; overflow: hidden; position: relative; width: 100%; }
+    .landing-content { max-width: 1000px; width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; z-index: 2; position: relative; padding-top: 80px; }
+    .landing-text { position: relative; z-index: 5; text-align: left; width: 100%; }
+    .landing-title { font-family: 'Fraunces', serif; font-size: clamp(2.0rem, 5vw, 3.8rem) !important; line-height: 1.1; margin-bottom: 25px; color: var(--text); }
+    .landing-title-sub { font-size: clamp(1.6rem, 3.5vw, 2.5rem); opacity: 0.8; display: block; }
+    .landing-text p { font-size: 1.1rem; color: var(--muted); margin-bottom: 40px; max-width: 550px; line-height: 1.8; }
+    .landing-btns { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
     
     .landing-visual { position: relative; display: flex; justify-content: center; align-items: center; perspective: 1500px; }
     .hero-img-wrap { width: 100%; max-width: 320px; position: relative; z-index: 4; border-radius: 30px; overflow: hidden; box-shadow: 0 40px 100px rgba(10,22,40,0.1); border: 8px solid #fff; background: #fff; transform-style: preserve-3d; animation: slowZoom 2s ease-out; }
@@ -973,13 +974,17 @@ const GlobalStyles = () => (
 
       /* Landing Visual Mobile Support */
       .landing-page {
-        padding: 80px 20px !important;
+        padding: 100px 20px 60px !important;
         min-height: auto !important;
+      }
+      .landing-top-bar {
+        padding: 20px 20px !important;
       }
       .landing-content {
         grid-template-columns: 1fr !important;
         text-align: center !important;
         gap: 40px !important;
+        padding-top: 40px !important;
       }
       .landing-text {
         display: flex !important;
@@ -988,6 +993,31 @@ const GlobalStyles = () => (
       }
       .landing-text p {
         margin: 0 auto 30px !important;
+      }
+      .landing-btns {
+        justify-content: center !important;
+        width: 100% !important;
+        gap: 15px !important;
+      }
+      .rotating-card-overlay {
+        position: absolute !important;
+        left: 10px !important;
+        bottom: 10px !important;
+        transform: none !important;
+        animation: none !important;
+        max-width: 45% !important;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
+      }
+      .rotating-card-overlay:nth-of-type(2) {
+        right: 10px !important;
+        left: auto !important;
+        top: 10px !important;
+        bottom: auto !important;
+      }
+      .landing-visual {
+        width: 100% !important;
+        max-width: 320px !important;
+        margin: 0 auto !important;
       }
       /* Admin Portal Mobile Fixes */
       .admin-portal {
