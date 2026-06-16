@@ -82,7 +82,7 @@ export const Products = ({ products, adminMode, onAdd, onEdit, onDelete, onAddTo
                         <div className="pdesc">{p.desc}</div>
                         <div className="pfoot">
                             <div><span className="pprice">{p.price}</span><span className="pper">{p.per}</span></div>
-                            <button className="cart-btn" onClick={() => onAddToCart(p)}>Add to Cart</button>
+                            <button className="cart-btn" onClick={(e) => { e.stopPropagation(); onAddToCart(p); }}>Add to Cart</button>
                         </div>
                     </div>
                 </div>

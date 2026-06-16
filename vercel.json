@@ -1,3 +1,4 @@
+
 {
   "version": 2,
   "builds": [
@@ -13,17 +14,7 @@
       }
     }
   ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/backend/server.js"
-    },
-    {
-      "handle": "filesystem"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
-    }
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/backend/server.js" }
   ]
 }

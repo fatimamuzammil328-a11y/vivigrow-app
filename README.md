@@ -1,6 +1,6 @@
 # Vivigrow App 🌿
 
-A MERN stack application for agricultural products.
+AgroFertilizers Marketing System is a comprehensive full‑stack web application built for Vivgro Ltd., an agriculture‑tech platform. It lets users (farmers, dealers, admins) sign up, log in, and later manage products, orders, etc. The core of the repo is a React front‑end and an Express + MongoDB back‑end, deployed on Vercel as serverless functions.
 
 ## How to Run
 

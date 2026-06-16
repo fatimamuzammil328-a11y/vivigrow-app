@@ -18,20 +18,16 @@ const MONGODB_URI = process.env.MONGODB_URI;
 let isConnected = false;
 
 const connectDB = async () => {
-    if (isConnected && mongoose.connection.readyState === 1) {
-        return;
-    }
+    if (isConnected && mongoose.connection.readyState === 1) return;
     try {
-        console.log('  ⏳  Connecting to MongoDB Atlas...');
         await mongoose.connect(MONGODB_URI, {
-            serverSelectionTimeoutMS: 10000,
+            serverSelectionTimeoutMS: 8000,  // 10s → 8s karo (Vercel ke andar fit ho)
             bufferCommands: false,
         });
         isConnected = true;
-        console.log('  ✅  Connected Successfully!');
     } catch (err) {
-        console.error('  ❌  Connection Error:', err.message);
         isConnected = false;
+        throw err;  // 
     }
 };
 

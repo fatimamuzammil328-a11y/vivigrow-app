@@ -187,21 +187,24 @@ export function CartModal({ items, onClose, onUpdateQty, onRemove, onCheckout })
                         </div>
                     ) : (
                         <div className="cart-items">
-                            {items.map((item) => (
-                                <div className="cart-item" key={item.id}>
-                                    <div className="ci-emoji">{item.emoji}</div>
-                                    <div className="ci-info">
-                                        <div className="ci-name">{item.name}</div>
-                                        <div className="ci-price">{item.price}</div>
-                                    </div>
-                                    <div className="ci-actions">
-                                        <button onClick={() => onUpdateQty(item.id, -1)}>−</button>
-                                        <span>{item.qty}</span>
-                                        <button onClick={() => onUpdateQty(item.id, 1)}>+</button>
-                                        <button className="ci-del" onClick={() => onRemove(item.id)}>🗑️</button>
-                                    </div>
-                                </div>
-                            ))}
+                             {items.map((item) => {
+                                 const itemId = item._id || item.id;
+                                 return (
+                                     <div className="cart-item" key={itemId}>
+                                         <div className="ci-emoji">{item.emoji}</div>
+                                         <div className="ci-info">
+                                             <div className="ci-name">{item.name}</div>
+                                             <div className="ci-price">{item.price}</div>
+                                         </div>
+                                         <div className="ci-actions">
+                                             <button onClick={() => onUpdateQty(itemId, -1)}>−</button>
+                                             <span>{item.qty}</span>
+                                             <button onClick={() => onUpdateQty(itemId, 1)}>+</button>
+                                             <button className="ci-del" onClick={() => onRemove(itemId)}>🗑️</button>
+                                         </div>
+                                     </div>
+                                 );
+                             })}
                             <div className="cart-summary">
                                 <div className="cs-row"><span>Subtotal</span><span>PKR {total.toLocaleString()}</span></div>
                                 <div className="cs-row"><span>Delivery</span><span>FREE</span></div>
@@ -475,7 +478,7 @@ export const ManagementModal = ({ type, data, onClose, onDelete, onAdd, onEdit, 
             return ['RawMaterials', 'Inventory', 'Orders', 'Customers', 'Invoices'].includes(type);
         }
         if (user.role === 'farmer') {
-            return ['Reviews', 'Support'].includes(type);
+            return ['Support'].includes(type); // Exclude global write access on reviews to enforce item-level ownership
         }
         return false;
     };
