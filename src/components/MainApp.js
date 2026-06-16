@@ -74,11 +74,11 @@ function MainApp() {
     };
 
     const handleUpdateQty = (id, delta) => {
-        setCart((prev) => prev.map((item) => (getProductId(item) === id ? { ...item, qty: Math.max(1, item.qty + delta) } : item)));
+        setCart((prev) => prev.map((item) => (String(getProductId(item)) === String(id) ? { ...item, qty: Math.max(1, item.qty + delta) } : item)));
     };
 
     const handleRemoveFromCart = (id) => {
-        setCart((prev) => prev.filter((item) => getProductId(item) !== id));
+        setCart((prev) => prev.filter((item) => String(getProductId(item)) !== String(id)));
     };
 
     const handleCheckoutSuccess = () => {
@@ -291,6 +291,7 @@ function MainApp() {
                     total={cartTotal}
                     onClose={() => setShowPayment(false)}
                     onSuccess={handleCheckoutSuccess}
+                    user={user}
                 />
             )}
 

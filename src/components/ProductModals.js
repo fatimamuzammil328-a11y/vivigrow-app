@@ -219,7 +219,7 @@ export function CartModal({ items, onClose, onUpdateQty, onRemove, onCheckout })
     );
 }
 
-export function PaymentModal({ items, total, onClose, onSuccess }) {
+export function PaymentModal({ items, total, onClose, onSuccess, user }) {
     const [step, setStep] = useState(1);
     const [method, setMethod] = useState("cod");
     const [loading, setLoading] = useState(false);
@@ -248,7 +248,16 @@ export function PaymentModal({ items, total, onClose, onSuccess }) {
             })),
             totalAmount: total,
             paymentMethod: methodName,
-            status: isCOD ? "PENDING (COD)" : "SUCCESSFUL (PAID)"
+            status: isCOD ? "PENDING (COD)" : "SUCCESSFUL (PAID)",
+            customerName: user?.name || "Guest"
+        };
+
+        const invoiceData = {
+            invoiceId: "INV-" + orderId,
+            customerName: user?.name || "Guest",
+            amount: total,
+            dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+            status: isCOD ? "Unpaid" : "Paid"
         };
 
         try {
@@ -257,6 +266,11 @@ export function PaymentModal({ items, total, onClose, onSuccess }) {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(orderData)
+            });
+            await fetch(`${API_URL}/erp/invoices`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(invoiceData)
             });
             
             setOrderInfo({
@@ -470,6 +484,8 @@ export const TrackOrderModal = ({ isOpen, onClose }) => {
 };
 
 export const ManagementModal = ({ type, data, onClose, onDelete, onAdd, onEdit, user, adminMode }) => {
+    const [searchQuery, setSearchQuery] = useState("");
+
     const getWriteAccess = () => {
         if (adminMode) return true;
         if (!user) return false;
@@ -505,6 +521,16 @@ export const ManagementModal = ({ type, data, onClose, onDelete, onAdd, onEdit, 
                 !item.customerName
             );
         }
+
+        if (searchQuery) {
+            const lowerQ = searchQuery.toLowerCase();
+            result = result.filter(item => 
+                Object.values(item).some(val => 
+                    String(val).toLowerCase().includes(lowerQ)
+                )
+            );
+        }
+
         return result;
     })();
 
@@ -513,7 +539,14 @@ export const ManagementModal = ({ type, data, onClose, onDelete, onAdd, onEdit, 
             <div className="modal dashboard-modal" onClick={(e) => e.stopPropagation()}>
                 <div className="modal-header">
                     <h3 className="modal-title">Management Desk: {type}</h3>
-                    <div style={{ display: 'flex', gap: '10px' }}>
+                    <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                        <input 
+                            type="text" 
+                            placeholder={`Search ${type}...`}
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            style={{ padding: '8px', borderRadius: '6px', border: '1px solid #ccc' }}
+                        />
                         {hasWriteAccess && type !== 'Profile' && (
                             <button className="btn-blue" style={{ padding: '8px 16px', fontSize: '0.8rem' }} onClick={() => onAdd(type)}>+ Add New {type}</button>
                         )}

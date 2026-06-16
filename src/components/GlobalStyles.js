@@ -989,6 +989,31 @@ const GlobalStyles = () => (
       .landing-text p {
         margin: 0 auto 30px !important;
       }
+      /* Admin Portal Mobile Fixes */
+      .admin-portal {
+        padding: 60px 20px !important;
+      }
+      .dashboard-grid {
+        grid-template-columns: 1fr !important;
+      }
+      
+      /* Dashboard Modal Mobile Fixes */
+      .dashboard-modal {
+        padding: 0 !important;
+      }
+      .dashboard-modal .modal-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 12px !important;
+      }
+      .dashboard-modal .modal-header > div {
+        flex-wrap: wrap !important;
+      }
+      .admin-table {
+        display: block !important;
+        overflow-x: auto !important;
+        white-space: nowrap !important;
+      }
     }
   `}</style>
 );
