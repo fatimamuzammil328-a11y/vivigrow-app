@@ -1192,7 +1192,7 @@ export const MemberDashboard = ({ user, onAction, onTrack }) => {
     const memberModules = [
         { id: 'Orders', title: 'My Orders', desc: 'Track your purchases.', icon: '🛍️' },
         { id: 'Track', title: 'Track Order', desc: 'Live delivery status.', icon: '📍', action: onTrack },
-        { id: 'Reviews', title: 'My Reviews', desc: 'Your feedback logs.', icon: '📝' },
+        { id: 'Reviews', title: 'Reviews', desc: 'Your feedback logs.', icon: '📝' },
         { id: 'Dealers', title: 'Dealer Search', desc: 'Find local dealers.', icon: '🗺️' },
         { id: 'Invoices', title: 'My Invoices', desc: 'View and pay your bills.', icon: '📄' },
         { id: 'Profile', title: 'My Account', desc: 'Settings & documents.', icon: '👤' },

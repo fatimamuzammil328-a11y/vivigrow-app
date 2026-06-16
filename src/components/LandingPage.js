@@ -9,7 +9,7 @@ function LandingPage({ onGoLogin, onGoSignup }) {
             {/* Top Bar */}
             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, padding: '30px 60px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', zIndex: 100 }}>
                 <div className="logo" style={{ cursor: 'default' }}>
-                    <span className="logo-icon">🌿</span>Agro<span>Fertilizers</span>
+                    <span className="logo-icon">🌿</span>
                 </div>
                 <div style={{ display: 'flex', gap: 15 }}>
                     <button className="btn-blue" onClick={onGoLogin} style={{ padding: '12px 28px', fontSize: '0.9rem', fontWeight: 800, borderRadius: '12px', background: 'var(--primary)', color: '#fff', border: 'none', boxShadow: '0 8px 20px rgba(27,67,50,0.2)' }}>Login</button>
